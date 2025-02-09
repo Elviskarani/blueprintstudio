@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import blueprint from '../images/blueprintstudio-removebg-preview.png';
-import pesaflow from '../images/logo4.png'
-import savannah from '../images/logo2.png'
-import stab from '../images/stablogo-removebg-preview.png'
-import yycontaractors from '../images/logologo.png'
+import pesaflow from '../images/logo4.png';
+import savannah from '../images/logo2.png';
+import stab from '../images/stablogo-removebg-preview.png';
+import yycontaractors from '../images/logologo.png';
 
 const HeroSection = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const rotations = ['rotate-3', '-rotate-3', 'rotate-6', '-rotate-6'];
   const navigationItems = [
     { name: 'Home', href: '#hero' },
@@ -16,20 +18,26 @@ const HeroSection = () => {
     { name: 'Testimonials', href: '#testimonials' }
   ];
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      // Close mobile menu after navigation (optional)
+      setIsMobileMenuOpen(false);
     }
   };
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/254791001601?text=Hello%20I%20am%20interested%20in%20your%20services', '_blank');
+    window.open(
+      'https://wa.me/254791001601?text=Hello%20I%20am%20interested%20in%20your%20services',
+      '_blank'
+    );
   };
 
   return (
     <div id="hero" className="relative">
+      {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-800/90 backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
@@ -38,7 +46,7 @@ const HeroSection = () => {
               <img src={blueprint} alt="Blueprint Studio" className="h-12 w-auto" />
             </div>
 
-            {/* Navigation Links */}
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {navigationItems.map((item) => (
                 <a
@@ -59,23 +67,56 @@ const HeroSection = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <button className="md:hidden p-2 text-white">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-white focus:outline-none"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  // X icon when the menu is open
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  // Hamburger icon when the menu is closed
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
               </svg>
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-gray-800">
+            <div className="px-4 pt-2 pb-4 space-y-1">
+              {navigationItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => scrollToSection(e, item.href)}
+                  className="block text-gray-200 hover:text-lime-400 transition-colors duration-200 font-medium"
+                >
+                  {item.name}
+                </a>
+              ))}
+              <button
+                onClick={handleWhatsAppClick}
+                className="block w-full text-left bg-lime-400 text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-lime-500 transition-colors duration-200"
+              >
+                Contact Us
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Content */}
@@ -94,23 +135,19 @@ const HeroSection = () => {
             </h2>
 
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-16 leading-relaxed">
-              Blueprint Design Studio is a dynamic and innovative design agency
-              that brings creative ideas to life. We work with a wide range of
-              clients to develop unique and effective branding, web design, and
-              graphic design solutions.
+              Blueprint Design Studio is a dynamic and innovative design agency that brings creative ideas to life.
+              We work with a wide range of clients to develop unique and effective branding, web design, and graphic design solutions.
             </p>
 
-            <h2 className="text-2xl md:text-3xl text-gray-200 mb-12">
-              Our Partners
-            </h2>
+            <h2 className="text-2xl md:text-3xl text-gray-200 mb-12">Our Partners</h2>
 
             {/* Partner Logos Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {[pesaflow, savannah, stab, yycontaractors].map((image, index) => (
                 <div
                   key={index}
-                  className={`bg-white/5 rounded-2xl aspect-square transform ${rotations[index]}
-                  hover:rotate-0 hover:scale-105 transition-all duration-300 ease-in-out
+                  className={`bg-white/5 rounded-2xl aspect-square transform ${rotations[index]} 
+                  hover:rotate-0 hover:scale-105 transition-all duration-300 ease-in-out 
                   hover:shadow-2xl hover:bg-white/20 cursor-pointer p-6`}
                 >
                   <div className="w-full h-full flex items-center justify-center">
